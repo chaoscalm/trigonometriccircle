@@ -3,6 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
+    namespace "com.example.trigonometriccircle" // Add this line
     compileSdkVersion 35
     defaultConfig {
         applicationId "com.example.trigonometriccircle"
