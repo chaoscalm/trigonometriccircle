@@ -3,33 +3,26 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <!-- Emoji Circle Background -->
-    <path
-        android:fillColor="#FFEB3B"
-        android:pathData="M54,2
-            a52,52 0 1,0 0,104
-            a52,52 0 1,0 0,-104"/>
-    <!-- Left Eye -->
+    <!-- OwO Eyes -->
     <path
         android:fillColor="#000000"
-        android:pathData="M38,40
-            a6,6 0 1,0 0,12
-            a6,6 0 1,0 0,-12"/>
-    <!-- Right Eye -->
+        android:pathData="M34,40
+            a6,6 0 1,1 12,0
+            a6,6 0 1,1 -12,0"/>
     <path
         android:fillColor="#000000"
-        android:pathData="M70,40
-            a6,6 0 1,0 0,12
-            a6,6 0 1,0 0,-12"/>
-    <!-- Smile -->
+        android:pathData="M62,40
+            a6,6 0 1,1 12,0
+            a6,6 0 1,1 -12,0"/>
+
+    <!-- OwO Mouth -->
     <path
         android:fillColor="#000000"
-        android:pathData="M35,70
-            q19,20 38,0
-            q-19,10 -38,0"/>
+        android:pathData="M42,58
+            q12,8 24,0
+            q-12,5 -24,0"/>
 
     <!-- Trigonometric Circle -->
-    <!-- Use a different color to make it stand out -->
     <path
         android:strokeColor="#000000"
         android:strokeWidth="2"
