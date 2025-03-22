@@ -39,13 +39,6 @@ class TrigonometricCircleView(context: Context, attrs: AttributeSet) : View(cont
         canvas.drawLine(0f, (height / 2).toFloat(), width.toFloat(), (height / 2).toFloat(), paint)
 
         if (isTouched) {
-            // Draw the degrees value, sin, and cos values
-            paint.textSize = 50f
-            paint.color = 0xFFFF0000.toInt() // red color for touch point text
-            canvas.drawText("$degrees°", touchX, touchY - 120, paint) // increased space
-            canvas.drawText("sin: $sinValue", touchX, touchY - 80, paint) // increased space
-            canvas.drawText("cos: $cosValue", touchX, touchY - 40, paint) // increased space
-
             // Draw secondary axes following touch point
             paint.color = 0xFF00FFFF.toInt() // cyan color for secondary axes
             canvas.drawLine(0f, touchY, width.toFloat(), touchY, paint)
@@ -58,6 +51,22 @@ class TrigonometricCircleView(context: Context, attrs: AttributeSet) : View(cont
             paint.color = 0x80FF0000.toInt() // semi-transparent red color for angle visualization
             canvas.drawArc(centerX - radius, centerY - radius, centerX + radius, centerY + radius, -degrees, degrees, true, paint)
             paint.style = Paint.Style.STROKE
+
+            // Draw matrix for angle, sin, and cos values
+            paint.textSize = 40f
+            paint.color = 0xFFFF0000.toInt() // red color for text
+            val matrixStartX = touchX + 20
+            val matrixStartY = touchY - 100
+
+            // Draw matrix headers
+            canvas.drawText("Angle", matrixStartX, matrixStartY, paint)
+            canvas.drawText("Sin", matrixStartX + 150, matrixStartY, paint)
+            canvas.drawText("Cos", matrixStartX + 300, matrixStartY, paint)
+
+            // Draw matrix values
+            canvas.drawText("$degrees°", matrixStartX, matrixStartY + 50, paint)
+            canvas.drawText("$sinValue", matrixStartX + 150, matrixStartY + 50, paint)
+            canvas.drawText("$cosValue", matrixStartX + 300, matrixStartY + 50, paint)
         }
     }
 
