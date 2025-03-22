@@ -62,18 +62,26 @@ class TrigonometricCircleView(context: Context, attrs: AttributeSet) : View(cont
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        touchX = event.x
-        touchY = event.y
         val centerX = width / 2
         val centerY = height / 2
-        val deltaX = touchX - centerX
-        val deltaY = centerY - touchY // Invert deltaY to make it anticlockwise
+        val radius = Math.min(width, height) / 2 - 20
+
+        val deltaX = event.x - centerX
+        val deltaY = centerY - event.y // Invert deltaY to make it anticlockwise
+
+        // Calculate the angle in degrees
         degrees = Math.toDegrees(Math.atan2(deltaY.toDouble(), deltaX.toDouble())).toFloat()
         if (degrees < 0) {
             degrees += 360 // Ensure degrees are positive
         }
-        sinValue = Math.sin(Math.toRadians(degrees.toDouble())).toFloat()
-        cosValue = Math.cos(Math.toRadians(degrees.toDouble())).toFloat()
+
+        // Constrain the touch point to the circumference of the circle
+        val angleInRadians = Math.toRadians(degrees.toDouble())
+        touchX = (centerX + radius * Math.cos(angleInRadians)).toFloat()
+        touchY = (centerY - radius * Math.sin(angleInRadians)).toFloat() // Invert sin to match the coordinate system
+
+        sinValue = Math.sin(angleInRadians).toFloat()
+        cosValue = Math.cos(angleInRadians).toFloat()
         isTouched = true
         invalidate()
 
