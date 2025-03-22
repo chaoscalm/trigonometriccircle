@@ -46,11 +46,11 @@ class TrigonometricCircleView(context: Context, attrs: AttributeSet) : View(cont
             canvas.drawLine(0f, touchY, width.toFloat(), touchY, paint)
             canvas.drawLine(touchX, 0f, touchX, height.toFloat(), paint)
 
-            // Draw angle visualization
+            // Draw angle visualization with LineageOS teal color with transparency
             val centerX = (width / 2).toFloat()
             val centerY = (height / 2).toFloat()
             paint.style = Paint.Style.FILL
-            paint.color = 0x80FF0000.toInt() // semi-transparent red color for angle visualization
+            paint.color = Color.parseColor("#80008080") // LineageOS teal color with 50% transparency
             canvas.drawArc(centerX - radius, centerY - radius, centerX + radius, centerY + radius, -degrees, degrees, true, paint)
             paint.style = Paint.Style.STROKE
 
