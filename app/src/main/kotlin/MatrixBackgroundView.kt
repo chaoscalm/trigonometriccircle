@@ -15,17 +15,20 @@ class MatrixBackgroundView(context: Context, attrs: AttributeSet) : View(context
         textSize = 40f
         isAntiAlias = true
     }
-    private val columns: Int
-    private val yPositions: IntArray
+    private var columns: Int = 0
+    private lateinit var yPositions: IntArray
     private val random = Random
 
     init {
-        columns = width / paint.textSize.toInt()
-        yPositions = IntArray(columns) { 0 }
+        post {
+            columns = width / paint.textSize.toInt()
+            yPositions = IntArray(columns) { 0 }
+        }
     }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
+        canvas.drawColor(Color.BLACK)
 
         for (i in 0 until columns) {
             val x = i * paint.textSize
