@@ -20,6 +20,9 @@ class TrigonometricCircleView(context: Context, attrs: AttributeSet) : View(cont
     private var cosValue: Float = 0f
     private var isTouched: Boolean = false
 
+    // LineageOS logo color (hex: #167C80)
+    private val lineageOSColor = 0xFF167C80.toInt()
+
     init {
         paint.color = 0xFF00FFFF.toInt() // cyan color for drawing elements
         paint.strokeWidth = 5f
@@ -46,11 +49,27 @@ class TrigonometricCircleView(context: Context, attrs: AttributeSet) : View(cont
             canvas.drawLine(0f, touchY, width.toFloat(), touchY, paint)
             canvas.drawLine(touchX, 0f, touchX, height.toFloat(), paint)
 
-            // Determine the quadrant and adjust matrix position accordingly
+            // Draw angle visualization
             val centerX = (width / 2).toFloat()
             val centerY = (height / 2).toFloat()
-            val matrixStartX: Float
-            val matrixStartY: Float
+            paint.style = Paint.Style.FILL
+            paint.color = 0x80FF0000.toInt() // semi-transparent red color for angle visualization
+            canvas.drawArc(centerX - radius, centerY - radius, centerX + radius, centerY + radius, -degrees, degrees, true, paint)
+            paint.style = Paint.Style.STROKE
+
+            // Check for notable angles and highlight angle
+            val notableAngles = listOf(0f, 30f, 45f, 60f, 90f, 180f, 270f)
+            val isNotable = notableAngles.any { angle -> kotlin.math.abs(degrees - angle) < 1 }
+
+            if (isNotable) {
+                paint.color = lineageOSColor // LineageOS logo color for highlight
+            } else {
+                paint.color = 0xFFFF0000.toInt() // red color for text
+            }
+
+            // Determine the quadrant and adjust matrix position accordingly
+            var matrixStartX: Float
+            var matrixStartY: Float
 
             if (touchX > centerX && touchY < centerY) { // First quadrant
                 matrixStartX = touchX - 200
@@ -63,6 +82,9 @@ class TrigonometricCircleView(context: Context, attrs: AttributeSet) : View(cont
                 matrixStartY = touchY - 120
             }
 
+            // Ensure the matrix does not overlap with the circle
+            matrixStartY = matrixStartY.coerceIn(0f, height - 150f)
+
             // Adjust the matrix internally
             val internalOffsetX = 20
             val internalOffsetY = 20
@@ -70,57 +92,18 @@ class TrigonometricCircleView(context: Context, attrs: AttributeSet) : View(cont
             // Draw matrix for angle, sin, and cos values
             paint.textSize = 40f
 
-            // Check for notable angles and highlight angle
-            val notableAngles = listOf(0f, 30f, 45f, 60f, 90f, 180f, 270f)
-            val isNotable = notableAngles.any { angle -> kotlin.math.abs(degrees - angle) < 1 }
+            // Draw matrix headers and values in two columns and three lines
+            val matrixColor = if (isNotable) lineageOSColor else 0xFFFF0000.toInt() // Use LineageOS color if notable
 
-            if (isNotable) {
-                paint.color = 0xFF00FFFF.toInt() // cyan color for highlight
-            } else {
-                paint.color = 0xFFFF0000.toInt() // red color for text
-            }
+            paint.color = matrixColor
+            canvas.drawText("Angle", matrixStartX + internalOffsetX, matrixStartY + internalOffsetY, paint)
+            canvas.drawText("${round(radians * 10) / 10} rad / ${round(degrees * 10) / 10}°", matrixStartX + 200 + internalOffsetX, matrixStartY + internalOffsetY, paint)
 
-            // Draw matrix headers and values vertically
-            canvas.drawText(
-                "Angle",
-                matrixStartX + internalOffsetX,
-                matrixStartY + internalOffsetY,
-                paint
-            )
-            canvas.drawText(
-                "${round(radians * 10) / 10} rad / ${round(degrees * 10) / 10}°",
-                matrixStartX + 150 + internalOffsetX,
-                matrixStartY + internalOffsetY,
-                paint
-            )
+            canvas.drawText("Sin", matrixStartX + internalOffsetX, matrixStartY + internalOffsetY + 50, paint)
+            canvas.drawText("${round(sinValue * 10) / 10}", matrixStartX + 200 + internalOffsetX, matrixStartY + internalOffsetY + 50, paint)
 
-            paint.color = 0xFFFF0000.toInt() // red color for text
-
-            canvas.drawText(
-                "Sin",
-                matrixStartX + internalOffsetX,
-                matrixStartY + 50 + internalOffsetY,
-                paint
-            )
-            canvas.drawText(
-                "${round(sinValue * 10) / 10}",
-                matrixStartX + 150 + internalOffsetX,
-                matrixStartY + 50 + internalOffsetY,
-                paint
-            )
-
-            canvas.drawText(
-                "Cos",
-                matrixStartX + internalOffsetX,
-                matrixStartY + 100 + internalOffsetY,
-                paint
-            )
-            canvas.drawText(
-                "${round(cosValue * 10) / 10}",
-                matrixStartX + 150 + internalOffsetX,
-                matrixStartY + 100 + internalOffsetY,
-                paint
-            )
+            canvas.drawText("Cos", matrixStartX + internalOffsetX, matrixStartY + internalOffsetY + 100, paint)
+            canvas.drawText("${round(cosValue * 10) / 10}", matrixStartX + 200 + internalOffsetX, matrixStartY + internalOffsetY + 100, paint)
         }
     }
 
