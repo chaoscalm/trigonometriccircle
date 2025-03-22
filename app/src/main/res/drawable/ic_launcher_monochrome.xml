@@ -1,24 +1,51 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="100dp"
-    android:height="100dp"
-    android:viewportWidth="100"
-    android:viewportHeight="100">
-    <!-- Circle -->
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Emoji Circle Background -->
+    <path
+        android:fillColor="#FFEB3B"
+        android:pathData="M54,2
+            a52,52 0 1,0 0,104
+            a52,52 0 1,0 0,-104"/>
+    <!-- Left Eye -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M38,40
+            a6,6 0 1,0 0,12
+            a6,6 0 1,0 0,-12"/>
+    <!-- Right Eye -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M70,40
+            a6,6 0 1,0 0,12
+            a6,6 0 1,0 0,-12"/>
+    <!-- Smile -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M35,70
+            q19,20 38,0
+            q-19,10 -38,0"/>
+
+    <!-- Trigonometric Circle -->
+    <!-- Use a different color to make it stand out -->
     <path
         android:strokeColor="#000000"
         android:strokeWidth="2"
         android:fillColor="@android:color/transparent" 
-        android:pathData="M50,10
-            a40,40 0 1,0 0,80
-            a40,40 0 1,0 0,-80"/>
+        android:pathData="M54,20
+            a34,34 0 1,0 0,68
+            a34,34 0 1,0 0,-68"/>
+
     <!-- Horizontal Axis -->
     <path
         android:strokeColor="#000000"
         android:strokeWidth="2"
-        android:pathData="M10,50 L90,50"/>
+        android:pathData="M20,54 L88,54"/>
     <!-- Vertical Axis -->
     <path
         android:strokeColor="#000000"
         android:strokeWidth="2"
-        android:pathData="M50,10 L50,90"/>
+        android:pathData="M54,20 L54,88"/>
 </vector>
