@@ -3,11 +3,12 @@ package com.example.trigonometriccircle
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import android.view.animation.ScaleAnimation
-import kotlin.math.round
+import kotlin.math.*
 
 class TrigonometricCircleView(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
@@ -33,7 +34,7 @@ class TrigonometricCircleView(context: Context, attrs: AttributeSet) : View(cont
         super.onDraw(canvas)
         val width = width
         val height = height
-        val radius = Math.min(width, height) / 2 - 20
+        val radius = min(width, height) / 2 - 20
 
         // Draw main circle
         canvas.drawCircle((width / 2).toFloat(), (height / 2).toFloat(), radius.toFloat(), paint)
@@ -59,7 +60,7 @@ class TrigonometricCircleView(context: Context, attrs: AttributeSet) : View(cont
 
             // Check for notable angles and highlight angle
             val notableAngles = listOf(0f, 30f, 45f, 60f, 90f, 180f, 270f)
-            val isNotable = notableAngles.any { angle -> kotlin.math.abs(degrees - angle) < 1 }
+            val isNotable = notableAngles.any { angle -> abs(degrees - angle) < 1 }
 
             if (isNotable) {
                 paint.color = lineageOSColor // LineageOS logo color for highlight
@@ -85,38 +86,55 @@ class TrigonometricCircleView(context: Context, attrs: AttributeSet) : View(cont
             // Ensure the matrix does not overlap with the circle
             matrixStartY = matrixStartY.coerceIn(0f, height - 150f)
 
-            // Adjust the matrix internally
-            val internalOffsetX = 20
-            val internalOffsetY = 20
-
             // Draw matrix for angle, sin, and cos values
             paint.textSize = 40f
 
             // Draw matrix headers and values in two columns and three lines
             val matrixColor = if (isNotable) lineageOSColor else 0xFFFF0000.toInt() // Use LineageOS color if notable
 
-            paint.color = matrixColor
-            canvas.drawText("Angle", matrixStartX + internalOffsetX, matrixStartY + internalOffsetY, paint)
-            canvas.drawText("${round(radians * 10) / 10} rad / ${round(degrees * 10) / 10}°", matrixStartX + 200 + internalOffsetX, matrixStartY + internalOffsetY, paint)
+            val angleString = "α: ${round(radians * 10) / 10} rad"
+            val sinString = "sin(α): ${round(sinValue * 10) / 10}"
+            val cosString = "cos(α): ${round(cosValue * 10) / 10}"
 
-            canvas.drawText("Sin", matrixStartX + internalOffsetX, matrixStartY + internalOffsetY + 50, paint)
-            canvas.drawText("${round(sinValue * 10) / 10}", matrixStartX + 200 + internalOffsetX, matrixStartY + internalOffsetY + 50, paint)
+            val rectPadding = 10
+            val textHeight = paint.textSize.toInt()
 
-            canvas.drawText("Cos", matrixStartX + internalOffsetX, matrixStartY + internalOffsetY + 100, paint)
-            canvas.drawText("${round(cosValue * 10) / 10}", matrixStartX + 200 + internalOffsetX, matrixStartY + internalOffsetY + 100, paint)
+            val angleRect = Rect().apply {
+                paint.getTextBounds(angleString, 0, angleString.length, this)
+                set(left - rectPadding, top - rectPadding, right + rectPadding, bottom + rectPadding)
+            }
+            val sinRect = Rect().apply {
+                paint.getTextBounds(sinString, 0, sinString.length, this)
+                set(left - rectPadding, top - rectPadding, right + rectPadding, bottom + rectPadding)
+            }
+            val cosRect = Rect().apply {
+                paint.getTextBounds(cosString, 0, cosString.length, this)
+                set(left - rectPadding, top - rectPadding, right + rectPadding, bottom + rectPadding)
+            }
+
+            drawTextInRect(canvas, angleString, matrixStartX, matrixStartY, angleRect, matrixColor)
+            drawTextInRect(canvas, sinString, matrixStartX, matrixStartY + textHeight + 20, sinRect, matrixColor)
+            drawTextInRect(canvas, cosString, matrixStartX, matrixStartY + 2 * (textHeight + 20), cosRect, matrixColor)
         }
+    }
+
+    private fun drawTextInRect(canvas: Canvas, text: String, x: Float, y: Float, rect: Rect, color: Int) {
+        paint.color = color
+        canvas.drawRect(x - rect.width() / 2, y - rect.height(), x + rect.width() / 2, y, paint)
+        paint.color = 0xFFFFFFFF.toInt()
+        canvas.drawText(text, x, y - rect.height() / 2, paint)
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         val centerX = width / 2
         val centerY = height / 2
-        val radius = Math.min(width, height) / 2 - 20
+        val radius = min(width, height) / 2 - 20
 
         val deltaX = event.x - centerX
         val deltaY = centerY - event.y // Invert deltaY to make it anticlockwise
 
         // Calculate the angle in degrees
-        degrees = Math.toDegrees(Math.atan2(deltaY.toDouble(), deltaX.toDouble())).toFloat()
+        degrees = Math.toDegrees(atan2(deltaY.toDouble(), deltaX.toDouble())).toFloat()
         if (degrees < 0) {
             degrees += 360 // Ensure degrees are positive
         }
@@ -126,11 +144,11 @@ class TrigonometricCircleView(context: Context, attrs: AttributeSet) : View(cont
 
         // Constrain the touch point to the circumference of the circle
         val angleInRadians = Math.toRadians(degrees.toDouble())
-        touchX = (centerX + radius * Math.cos(angleInRadians)).toFloat()
-        touchY = (centerY - radius * Math.sin(angleInRadians)).toFloat() // Invert sin to match the coordinate system
+        touchX = (centerX + radius * cos(angleInRadians)).toFloat()
+        touchY = (centerY - radius * sin(angleInRadians)).toFloat() // Invert sin to match the coordinate system
 
-        sinValue = Math.sin(angleInRadians).toFloat()
-        cosValue = Math.cos(angleInRadians).toFloat()
+        sinValue = sin(angleInRadians).toFloat()
+        cosValue = cos(angleInRadians).toFloat()
         isTouched = true
         invalidate()
 
