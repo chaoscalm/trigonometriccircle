@@ -17,10 +17,14 @@ class MatrixBackgroundView(context: Context, attrs: AttributeSet) : View(context
     init {
         paint.color = Color.GREEN
         paint.textSize = 32f
+    }
 
-        // Initialize matrix data
-        for (i in 0..width / 32) {
-            matrixData.add(MatrixColumn(i * 32, random.nextInt(height)))
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        super.onSizeChanged(w, h, oldw, oldh)
+        // Initialize matrix data after the view has been measured
+        matrixData.clear()
+        for (i in 0..w / 32) {
+            matrixData.add(MatrixColumn(i * 32, random.nextInt(h)))
         }
     }
 
@@ -28,7 +32,7 @@ class MatrixBackgroundView(context: Context, attrs: AttributeSet) : View(context
         super.onDraw(canvas)
 
         for (column in matrixData) {
-            column.update()
+            column.update(height)
             canvas.drawText(column.char, column.x.toFloat(), column.y.toFloat(), paint)
         }
 
@@ -38,9 +42,9 @@ class MatrixBackgroundView(context: Context, attrs: AttributeSet) : View(context
     inner class MatrixColumn(var x: Int, var y: Int) {
         var char = getRandomChar()
 
-        fun update() {
+        fun update(maxHeight: Int) {
             y += 32
-            if (y > height) {
+            if (y > maxHeight) {
                 y = 0
                 char = getRandomChar()
             }
