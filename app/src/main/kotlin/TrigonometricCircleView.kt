@@ -27,6 +27,7 @@ class TrigonometricCircleView(context: Context, attrs: AttributeSet) : View(cont
         paint.color = Color.CYAN
         paint.strokeWidth = 5f
         paint.style = Paint.Style.STROKE
+        setBackgroundColor(Color.BLACK)  // Set the background color to black
     }
 
     override fun onAttachedToWindow() {
@@ -50,6 +51,8 @@ class TrigonometricCircleView(context: Context, attrs: AttributeSet) : View(cont
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
+        canvas.drawColor(Color.BLACK)  // Fill the canvas with black
+
         val width = width
         val height = height
         val radius = min(width, height) / 2 - 20
