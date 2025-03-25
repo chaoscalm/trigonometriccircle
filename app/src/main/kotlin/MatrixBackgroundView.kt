@@ -32,13 +32,15 @@ class MatrixBackgroundView(context: Context, attrs: AttributeSet) : View(context
     }
 
     override fun onDraw(canvas: Canvas) {
-        super.onDraw(canvas)
+        // Fill the canvas with black to clear previous frame
+        canvas.drawColor(Color.BLACK)
 
         for (column in matrixData) {
             column.update(height)
             canvas.drawText(column.char, column.x.toFloat(), column.y.toFloat(), paint)
         }
 
+        // Invalidate the view to trigger a redraw
         postInvalidateDelayed(50)
     }
 
