@@ -27,8 +27,11 @@ class TrigonometricCircleView(context: Context, attrs: AttributeSet) : View(cont
         paint.color = Color.CYAN
         paint.strokeWidth = 5f
         paint.style = Paint.Style.STROKE
+    }
 
-        // Find MathView (WebView) in the parent layout
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        // Find MathView (WebView) in the parent layout after the view is attached to the window
         mathView = (context as MainActivity).findViewById(R.id.mathView)
         mathView.settings.javaScriptEnabled = true
     }
