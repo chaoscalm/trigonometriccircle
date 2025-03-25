@@ -17,14 +17,17 @@ class MatrixBackgroundView(context: Context, attrs: AttributeSet) : View(context
     init {
         paint.color = Color.GREEN
         paint.textSize = 32f
+        setBackgroundColor(Color.BLACK) // Set the background color to black
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
         // Initialize matrix data after the view has been measured
         matrixData.clear()
-        for (i in 0..w / 32) {
-            matrixData.add(MatrixColumn(i * 32, random.nextInt(h)))
+        if (h > 0) { // Ensure height is positive
+            for (i in 0..w / 32) {
+                matrixData.add(MatrixColumn(i * 32, random.nextInt(h)))
+            }
         }
     }
 
