@@ -8,7 +8,6 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import android.view.animation.ScaleAnimation
-import android.webkit.WebView
 import kotlin.math.*
 
 class TrigonometricCircleView(context: Context, attrs: AttributeSet) : View(context, attrs) {
@@ -21,38 +20,14 @@ class TrigonometricCircleView(context: Context, attrs: AttributeSet) : View(cont
     private var cosValue: Float = 0f
     private var isTouched: Boolean = false
 
-    private lateinit var mathView: WebView
-
     init {
         paint.color = Color.CYAN
         paint.strokeWidth = 5f
         paint.style = Paint.Style.STROKE
-        setBackgroundColor(Color.BLACK)  // Set the background color to black
-    }
-
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-        // Find MathView (WebView) in the parent layout after the view is attached to the window
-        mathView = (context as MainActivity).findViewById(R.id.mathView)
-        mathView.settings.javaScriptEnabled = true
-    }
-
-    private fun formatValue(value: Float): String {
-        return if (value == -0.0f) "0" else value.toString()
-    }
-
-    private fun formatLaTeX(value: Float, isAngle: Boolean = false): String {
-        return if (isAngle) {
-            "\\alpha: ${round(value * 10) / 10}^\\circ"
-        } else {
-            formatValue(round(value * 10) / 10).toString()
-        }
     }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        canvas.drawColor(Color.BLACK)  // Fill the canvas with black
-
         val width = width
         val height = height
         val radius = min(width, height) / 2 - 20
@@ -84,35 +59,9 @@ class TrigonometricCircleView(context: Context, attrs: AttributeSet) : View(cont
             val textY = centerY - (radius / 2) * sin(Math.toRadians(degrees.toDouble())).toFloat()
             paint.textSize = 40f
             paint.color = Color.WHITE
-
-            val angleText = formatLaTeX(degrees, isAngle = true)
-            val sinText = "\\sin(\\alpha): ${formatLaTeX(sinValue)}"
-            val cosText = "\\cos(\\alpha): ${formatLaTeX(cosValue)}"
-
-            canvas.drawText(angleText, textX, textY - 60, paint)
-            canvas.drawText(sinText, textX, textY - 20, paint)
-            canvas.drawText(cosText, textX, textY + 20, paint)
-
-            // Update MathView (WebView) with LaTeX formatted text using MathJax
-            val latex = """
-                <html>
-                <head>
-                    <script type="text/javascript" 
-                        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
-                    </script>
-                </head>
-                <body>
-                    <div id="math">
-                        \[
-                        \alpha = ${round(degrees * 10) / 10}^\circ \\
-                        \sin(\alpha) = ${formatLaTeX(sinValue)} \\
-                        \cos(\alpha) = ${formatLaTeX(cosValue)}
-                        \]
-                    </div>
-                </body>
-                </html>
-            """.trimIndent()
-            mathView.loadDataWithBaseURL(null, latex, "text/html", "utf-8", null)
+            canvas.drawText("α: ${round(degrees * 10) / 10}°", textX, textY - 60, paint)
+            canvas.drawText("sin(α): ${round(sinValue * 10) / 10}", textX, textY - 20, paint)
+            canvas.drawText("cos(α): ${round(cosValue * 10) / 10}", textX, textY + 20, paint)
         }
     }
 
