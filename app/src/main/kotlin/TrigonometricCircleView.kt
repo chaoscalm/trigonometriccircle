@@ -8,7 +8,7 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import android.view.animation.ScaleAnimation
-import io.github.kexanie.library.MathView
+import android.webkit.WebView
 import kotlin.math.*
 
 class TrigonometricCircleView(context: Context, attrs: AttributeSet) : View(context, attrs) {
@@ -21,15 +21,16 @@ class TrigonometricCircleView(context: Context, attrs: AttributeSet) : View(cont
     private var cosValue: Float = 0f
     private var isTouched: Boolean = false
 
-    private lateinit var mathView: MathView
+    private lateinit var mathView: WebView
 
     init {
         paint.color = Color.CYAN
         paint.strokeWidth = 5f
         paint.style = Paint.Style.STROKE
 
-        // Find MathView in the parent layout
+        // Find MathView (WebView) in the parent layout
         mathView = (context as MainActivity).findViewById(R.id.mathView)
+        mathView.settings.javaScriptEnabled = true
     }
 
     private fun formatValue(value: Float): String {
@@ -86,15 +87,26 @@ class TrigonometricCircleView(context: Context, attrs: AttributeSet) : View(cont
             canvas.drawText(sinText, textX, textY - 20, paint)
             canvas.drawText(cosText, textX, textY + 20, paint)
 
-            // Update MathView with LaTeX formatted text
+            // Update MathView (WebView) with LaTeX formatted text using MathJax
             val latex = """
-                \[
-                \alpha = ${round(degrees * 10) / 10}^\circ \\
-                \sin(\alpha) = ${formatLaTeX(sinValue)} \\
-                \cos(\alpha) = ${formatLaTeX(cosValue)}
-                \]
+                <html>
+                <head>
+                    <script type="text/javascript" 
+                        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+                    </script>
+                </head>
+                <body>
+                    <div id="math">
+                        \[
+                        \alpha = ${round(degrees * 10) / 10}^\circ \\
+                        \sin(\alpha) = ${formatLaTeX(sinValue)} \\
+                        \cos(\alpha) = ${formatLaTeX(cosValue)}
+                        \]
+                    </div>
+                </body>
+                </html>
             """.trimIndent()
-            mathView.setText(latex)
+            mathView.loadDataWithBaseURL(null, latex, "text/html", "utf-8", null)
         }
     }
 
