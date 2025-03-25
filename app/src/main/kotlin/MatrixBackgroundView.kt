@@ -20,7 +20,7 @@ class MatrixBackgroundView(context: Context, attrs: AttributeSet) : View(context
 
         // Initialize matrix data
         for (i in 0..width / 32) {
-            matrixData.add(MatrixColumn(0, random.nextInt(height)))
+            matrixData.add(MatrixColumn(i * 32, random.nextInt(height)))
         }
     }
 
