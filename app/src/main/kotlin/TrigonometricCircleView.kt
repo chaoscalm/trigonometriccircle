@@ -8,6 +8,7 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import android.view.animation.ScaleAnimation
+import io.github.kexanie.library.MathView
 import kotlin.math.*
 
 class TrigonometricCircleView(context: Context, attrs: AttributeSet) : View(context, attrs) {
@@ -20,10 +21,27 @@ class TrigonometricCircleView(context: Context, attrs: AttributeSet) : View(cont
     private var cosValue: Float = 0f
     private var isTouched: Boolean = false
 
+    private lateinit var mathView: MathView
+
     init {
         paint.color = Color.CYAN
         paint.strokeWidth = 5f
         paint.style = Paint.Style.STROKE
+
+        // Find MathView in the parent layout
+        mathView = (context as MainActivity).findViewById(R.id.mathView)
+    }
+
+    private fun formatValue(value: Float): String {
+        return if (value == -0.0f) "0" else value.toString()
+    }
+
+    private fun formatLaTeX(value: Float, isAngle: Boolean = false): String {
+        return if (isAngle) {
+            "\\alpha: ${round(value * 10) / 10}^\\circ"
+        } else {
+            formatValue(round(value * 10) / 10).toString()
+        }
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -59,9 +77,24 @@ class TrigonometricCircleView(context: Context, attrs: AttributeSet) : View(cont
             val textY = centerY - (radius / 2) * sin(Math.toRadians(degrees.toDouble())).toFloat()
             paint.textSize = 40f
             paint.color = Color.WHITE
-            canvas.drawText("α: ${round(degrees * 10) / 10}°", textX, textY - 60, paint)
-            canvas.drawText("sin(α): ${round(sinValue * 10) / 10}", textX, textY - 20, paint)
-            canvas.drawText("cos(α): ${round(cosValue * 10) / 10}", textX, textY + 20, paint)
+
+            val angleText = formatLaTeX(degrees, isAngle = true)
+            val sinText = "\\sin(\\alpha): ${formatLaTeX(sinValue)}"
+            val cosText = "\\cos(\\alpha): ${formatLaTeX(cosValue)}"
+
+            canvas.drawText(angleText, textX, textY - 60, paint)
+            canvas.drawText(sinText, textX, textY - 20, paint)
+            canvas.drawText(cosText, textX, textY + 20, paint)
+
+            // Update MathView with LaTeX formatted text
+            val latex = """
+                \[
+                \alpha = ${round(degrees * 10) / 10}^\circ \\
+                \sin(\alpha) = ${formatLaTeX(sinValue)} \\
+                \cos(\alpha) = ${formatLaTeX(cosValue)}
+                \]
+            """.trimIndent()
+            mathView.setText(latex)
         }
     }
 
